@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나의 가계부</title>
+<meta name="description" content="나의 가계부 - 수입·지출 기록과 리포트">
+<meta name="theme-color" content="#fdeceb">
+
+<!-- 홈 화면 앱 설정 -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="가계부">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdeceb;
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; }
+  #app { display: block; width: 100%; height: 100vh; height: 100dvh; border: 0; }
+  /* 여는 중 화면 */
+  #splash { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; background: linear-gradient(160deg, #fde3e1 0%, #fff1ec 45%, #fde8e8 100%); transition: opacity .35s; z-index: 2; }
+  #splash img { width: 84px; height: 84px; border-radius: 22px; box-shadow: 0 8px 22px rgba(238,106,128,.3); }
+  #splash p { margin: 0; color: #7d6a6f; font-size: 15px; font-weight: 500; }
+  #splash a { display: none; margin-top: 6px; color: #ee6a80; font-size: 13px; text-decoration: underline; }
+  #splash.hide { opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+  <div id="splash">
+    <img src="icons/icon-192.png" alt="">
+    <p>가계부 여는 중…</p>
+    <a id="direct" target="_top">화면이 안 뜨면 여기를 눌러 주세요</a>
+  </div>
+  <iframe id="app" title="나의 가계부" allow="clipboard-write"></iframe>
+
+<script>
+  // ▼▼▼ 앱스크립트 웹앱 주소 (배포 주소가 바뀌면 여기만 고치면 돼요) ▼▼▼
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbxb84sbTAC09H-AlIVSWC9Rg116unJU5yoUpxu02uxrXp_V7gLxs6WEhNFBhmtW1QwnrA/exec';
+  // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+  var frame = document.getElementById('app');
+  var splash = document.getElementById('splash');
+  var direct = document.getElementById('direct');
+  direct.href = APP_URL;
+
+  frame.addEventListener('load', function () {
+    setTimeout(function () { splash.classList.add('hide'); }, 300);
+  });
+  frame.src = APP_URL;
+
+  // 8초가 지나도 안 열리면 '바로 열기' 링크를 보여줘요
+  setTimeout(function () { direct.style.display = 'block'; }, 8000);
+
+  // 홈 화면 설치용 (오프라인 시 여는 화면만 보관)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>
